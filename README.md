@@ -56,7 +56,7 @@ NOTE: Certain versions of PyTorch and CUDA are not compatible. The versions abov
 ### Installing Submodules
 In the initial setp of the environment, the submodules did not install properly. It will  be done here. 
 
-``cd C:\Users\YOURNAME\gaussian-splatting``
+``cd C:\Users\<username>\gaussian-splatting``
 
 ``pip install submodules/diff-gaussian-rasterization``
 
@@ -68,15 +68,15 @@ In the initial setp of the environment, the submodules did not install properly.
 
 If the above did not work, please consult the errors section below.
 
-## Data Preparation (Video)
-First, I renamed the video for clarity and moved it into a new folder in ``../gaussian-splatting/input_data``. For example, with a vide called ``bottle.mp4``:
+## Data Preparation
+Both videos and images can be used. 
+First, I renamed the video for clarity and moved it into ``../gaussian-splatting/input_data``. For example, with a video called ``room.mp4``:
 
 ```
 📂.../ 
 ├──📂gaussian-splatting/ 
 │   ├──📂input_data/
-│   │	├──📂bottle/
-│   │	│	├──bottle.mp4			
+│   │	├──room.mp4		
 │   │   │...
 │   │...
 │...
@@ -87,17 +87,19 @@ Now, opening Command Prompt again, input:
 conda activate gaussian_splatting
 cd gaussian-splatting
 ```
+With the video in the correct location, input:
+```
+ffmpeg -i input_data/room.mp4 -r 1/1 input_data/room/image%03d.png
+```
+This will output a series of images inside ``../gaussian-splatting/input_data/room``. 
 
-
-
-
-Images need to be setup in a specific way so that COLMAP can recognize it. The structure is seen below:
+Images need to be setup in a specific way so that COLMAP can recognize it. I created another folder and manually moved the images into it. The structure is seen below:
 
 ```
 📂.../ 
 ├──📂gaussian-splatting/ 
 │   ├──📂input_data/
-│   │	├──📂customfolder/
+│   │	├──📂room/
 │   │	│	├──📂input/
 │   │	│	│	├── 🖼️ <image 0>
 │   │	│	│	├── 🖼️ <image 1>
@@ -106,32 +108,50 @@ Images need to be setup in a specific way so that COLMAP can recognize it. The s
 │   │...
 │...
 ```
+For optimization to work, COLMAP needs to format the images properly.
+```
+python convert.py -s input_data/room --colmap_executable "C:\Users\<username>\colmap-x64-windows-cuda\COLMAP.bat"
+```
+NOTE: COLMAP may be installed in a different location on your computer. Just change the path of COLMAP accordingly.
 
-
+## Optimizing the data
+With the Conda environment active and the correct directory on Command Prompt, input:
 
 ```
-📂username/ 
+python train.py -s input_data/room
+```
+
+This step takes the longest. The code will generate a new folder in ````../gaussian-splatting/output`` that will contain the data. The name of the folder is usually randomized. I changed the name of this folder for clarity. The structure can be seen below:
+
+```
+📂.../ 
 ├──📂gaussian-splatting/ 
-│   ├──📂input_data/
-│   │	├──📂customfolder/
-│   │	│	├──📂input/
-│   │	│	│	├── 🖼️ <image 0>
-│   │	│	│	├── 🖼️ <image 1>
-│   │	│	│	│...
+│   ├──📂output/
+│   │	├──📂room/ # original name was "ade9c340-8"
+│   │	│	├──📂point_cloud/
+│   │	│	│	├──📂iteration_7000/
+│   │	│	│	├──📂iteration_30000/ 
+│   │	│	│...		
 │   │   │...
 │   │...
 │...
 ```
 
+## Viewing the 3D Gaussian Splats in SIBR
+The original repository uses SIBR to view the generated model, called``SIBR_gaussianViewer_app.exe``. You can find it [here](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/binaries/viewers.zip).
+
+Extract the zip file and move it to the ``../gaussian-splatting`` folder. 
+
+To set it up:
+
 ```
-ffmpeg -i input_data/filename.mp4 -r 1/1 input_data/bottle/filename%03d.png
+cd viewers/bin
+
 ```
-```
-python convert.py -s input_data/filename --colmap_executable "C:\Users\username\colmap-x64-windows-cuda\COLMAP.bat"
-```
-```
-python train.py -s input_data/filename
-```
+
+
+
+
 ```
 cd C:\Users\username\gaussian-splatting-Windows\viewers\bin
 ```
