@@ -194,3 +194,14 @@ After installing the packages, navigate to ``Edit > Project Settings``.
 ## Importing the Generated 3D Gaussian Splatting Model
 In the previous section, we generated a 3D Gaussian Splatting Model of a scene. It can be found in the folder ``C:\Users\<username>\gaussian-splatting\output\room``
 Back in Unity, go to ``Tools > GaussianSplats > Create GaussianSplatAsset``. This should open a window that will allow for importing the .ply file. Select the .ply file, found in the folders in  ``C:\Users\jlin3\gaussian-splatting\output\room\point_cloud\...``.
+
+Select ``Create Asset``, and it should show up within GaussianAssets.
+
+## Viewing the Model
+In the Hierarchy tab of Unity, create a new Game Object and name it accordingly. Go to its properties:
+- add **Gaussian Splat Renderer** and select the asset that was just imported.
+- add **Post-Process Layer**, and set the Layer to ``Everything``.
+
+Next, add a Camera under the Game Object. In its Properties, add a **Tracked Pose Driver**. This will allow the scene to be static when viewed in VR. 
+
+Connect the Meta Quest Pro to the computer via Quest Link. Inside, you should be able to view the desktop and control it remotely. Select Unity from the Desktop inside the Quest Pro, and press the **Play** button on the top.
