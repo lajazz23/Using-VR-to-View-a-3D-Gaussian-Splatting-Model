@@ -1,8 +1,14 @@
 # Using VR to View a 3D Gaussian Splatting Model
-This repository is a record of how I sucessfully modeled 3D Gaussian Splatting and viewed it in a virtual reality environment. 
+This repository is a record of how I sucessfully modeled 3D Gaussian Splatting and viewed it in a virtual reality environment. Please also review the original repository.
+
+There are two sections to this repository:
+
+1. [3D Gaussian Splatting](#3d-gaussian-splatting)
+2. [3D Gaussian Splatting in Unity](#using-vr-to-view-a-3d-gaussian-splatting-model)
 
 ## 3D Gaussian Splatting
 Original paper: [3D Gaussian Splatting for Real-Time Radiance Field Rendering](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/3d_gaussian_splatting_high.pdf)
+
 Original repository: https://github.com/graphdeco-inria/gaussian-splatting
 
 3D Gaussian splatting is a method of rebuilding a 3D scene using gaussian splats. Gaussian splats hold information such as covariance, position, color, and opacity. Together, the gaussian splats create a continuous radiance field. 
@@ -20,7 +26,7 @@ Original repository: https://github.com/graphdeco-inria/gaussian-splatting
 These were installed in sequential order.
 - **[Git](https://git-scm.com/downloads) :** To be used for cloning the repository to obtain the code.
 - **[Conda](https://www.anaconda.com/download/success) :** To be used to create the environment that the code utilizes.
-- **[CUDA Toolkit v11.7](https://developer.nvidia.com/cuda-11-7-1-download-archive) :** The version of CUDA is critical for the success of the code. 
+- **[CUDA Toolkit v11.7](https://developer.nvidia.com/cuda-11-7-1-download-archive) :** The version of CUDA is critical for the success of the code. Version 11.6 will not work, and 11.8 did not work for me.
 - **[Visual Studio 2022 v17.4.6](https://www.catalog.update.microsoft.com/Search.aspx?q=visual+studio+2022&p=3) :** Be sure to select **Desktop development with C++**, as well as **MSVC v142 - VS 2019 C++ x64/x86 build tools**. 
 - **[COLMAP](https://github.com/colmap/colmap/releases) :** Used for reconstruction of 3D scene from images.
 - **[ImageMagik](https://imagemagick.org/script/download.php) :** Used for formatting and preparing images.
@@ -28,7 +34,7 @@ These were installed in sequential order.
 
 ## Setup
 Before touching the code, ensure that:
-- "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.29.30133\bin\HostX64\x64" is added to the PATH.
+- ``C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.29.30133\bin\HostX64\x64`` is added to the PATH. This should be the 2019 toolkit. 
 - CUDA toolkit has been installed.
 - Visual Studio 2022 is version 17.4.6. I didn't find success using the latest version of Visual Studio 2022.
 
@@ -54,7 +60,7 @@ pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --e
 NOTE: Certain versions of PyTorch and CUDA are not compatible. The versions above worked well for me.
 
 ### Installing Submodules
-In the initial setp of the environment, the submodules did not install properly. It will  be done here. 
+In the initial setup of the environment, the submodules did not install properly. It will  be done here. 
 
 ``cd C:\Users\<username>\gaussian-splatting``
 
@@ -66,7 +72,7 @@ In the initial setp of the environment, the submodules did not install properly.
 
 ``pip install tqdm``
 
-If the above did not work, please consult the errors section below.
+NOTE: I had failed installing the submodules many times. Using the Visual Studio 2019 C++ toolkit seemed to fix the issue. 
 
 ## Data Preparation
 Both videos and images can be used. 
@@ -145,16 +151,46 @@ Extract the zip file and move it to the ``../gaussian-splatting`` folder.
 To set it up:
 
 ```
-cd viewers/bin
+cd C:\Users\<username>\gaussian-splatting\viewers\bin
+
+SIBR_gaussianViewer_app.exe -m C:\Users\<username>\gaussian-splatting\output\room
+```
+This should open the viewer, of which you can explore the model in.
+
+
+# Unity Gaussian Splatting
+To view the 3D Gaussian Splatting model in Unity, I utilized the [Gaussian Splatting playground in Unity](https://github.com/aras-p/UnityGaussianSplatting) repository.
+
+## Requirements
+
+### Hardware
+- Meta Quest Pro
+- Meta Quest Link cable
+
+### Software
+- **[Unity 2022.3.7](https://unity.com/releases/editor/whats-new/2022.3.7) :** Newer versions of Unity may work as well.
+
+## Setup
+Clone the repository to have access to the toolkit.
 
 ```
-
-
-
-
+git clone https://github.com/aras-p/UnityGaussianSplatting
 ```
-cd C:\Users\username\gaussian-splatting-Windows\viewers\bin
-```
-```
-SIBR_gaussianViewer_app.exe -m <folder containing point_cloud>
-```
+
+In Unity Hub, open the file ``../<username>\UnityGaussianSplatting\projects\GaussianExample`` and open **GSTestScene** in Unity.
+
+### Unity Setup
+Inside Unity, navigate to ``Window > Package Manager``. Inside the Package Manager, install:
+- OpenXR Plugin
+- XR Plugin Management
+- XR Interaction Toolkit
+- Post-Processing
+
+After installing the packages, navigate to ``Edit > Project Settings``. 
+- In **XR Plugin Management**, ensure that ``OpenXR`` is selected under the Plug-in Providers tab.
+- Under **XR Plugin Management**, navigate to **OpenXR** and change the Render Mode to ``Multi-pass``.
+- Under **XR Plugin Management**, navigate to **Project Validation** and fix all of the errors by clicking the ``Fix All`` button.
+
+## Importing the Generated 3D Gaussian Splatting Model
+In the previous section, we generated a 3D Gaussian Splatting Model of a scene. It can be found in the folder ``C:\Users\<username>\gaussian-splatting\output\room``
+Back in Unity, go to ``Tools > GaussianSplats > Create GaussianSplatAsset``. This should open a window that will allow for importing the .ply file. Select the .ply file, found in the folders in  ``C:\Users\jlin3\gaussian-splatting\output\room\point_cloud\...``.
