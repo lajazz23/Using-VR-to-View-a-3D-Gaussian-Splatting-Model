@@ -4,7 +4,7 @@ This repository is a record of how I sucessfully modeled 3D Gaussian Splatting a
 There are two sections to this repository:
 
 1. [3D Gaussian Splatting](#3d-gaussian-splatting)
-2. [3D Gaussian Splatting in Unity](#using-vr-to-view-a-3d-gaussian-splatting-model)
+2. [3D Gaussian Splatting in Unity](#unity-gaussian-splatting)
 
 ## 3D Gaussian Splatting
 Original paper: [3D Gaussian Splatting for Real-Time Radiance Field Rendering](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/3d_gaussian_splatting_high.pdf)
